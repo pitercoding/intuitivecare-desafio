@@ -10,11 +10,16 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Despesa {
+
     private String cnpj;
     private String razaoSocial;
     private int ano;
     private int trimestre;
     private BigDecimal valor;
+
+    private String uf;
+    private String nomeFantasia;
+    private String modalidade;
 
     public String[] toArray() {
         return new String[]{
@@ -22,7 +27,10 @@ public class Despesa {
                 razaoSocial,
                 String.valueOf(ano),
                 String.valueOf(trimestre),
-                valor.toString()
+                valor.toString(),
+                uf,
+                nomeFantasia,
+                modalidade
         };
     }
 }
