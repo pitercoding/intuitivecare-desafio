@@ -4,6 +4,7 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import com.opencsv.exceptions.CsvException;
 import com.pitercoding.backend.domain.Despesa;
+import com.pitercoding.backend.domain.DespesaAgregada;
 import org.springframework.stereotype.Service;
 
 import java.io.FileReader;
@@ -37,6 +38,24 @@ public class CsvService {
             });
             for (Despesa d : despesas) {
                 writer.writeNext(d.toArray());
+            }
+        }
+    }
+
+    public void writeAggregatedCsv(List<DespesaAgregada> agregadas, Path arquivo) throws IOException {
+        try (CSVWriter writer = new CSVWriter(new FileWriter(arquivo.toFile()))) {
+            writer.writeNext(new String[]{
+                    "CNPJ", "RazaoSocial", "UF", "Total", "Media", "DesvioPadrao"
+            });
+            for (DespesaAgregada d : agregadas) {
+                writer.writeNext(new String[]{
+                        d.getCnpj(),
+                        d.getRazaoSocial(),
+                        d.getUf(),
+                        d.getTotal().toString(),
+                        d.getMedia().toString(),
+                        d.getDesvioPadrao().toString()
+                });
             }
         }
     }

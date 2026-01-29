@@ -1,6 +1,7 @@
 package com.pitercoding.backend.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,15 +15,20 @@ import java.nio.file.*;
 @Service
 public class OperadoraDownloadService {
 
-    private static final String URL_ANS = "https://dadosabertos.ans.gov.br/FTP/PDA/operadoras_de_plano_de_saude_ativas.csv";
+    private final RestTemplate restTemplate;
 
-    public Path downloadCadastro() throws IOException {
-        Path destino = Paths.get("tmp", "operadoras.csv");
-        Files.createDirectories(destino.getParent()); // se tmp não existir, será criada antes de iniciar o download
+    public OperadoraDownloadService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
-        try (InputStream in = new URL(URL_ANS).openStream()) {
-            Files.copy(in, destino, StandardCopyOption.REPLACE_EXISTING);
+    public Path downloadOperadoras() throws IOException {
+        String url = "https://dadosabertos.ans.gov.br/FTP/PDA/operadoras_de_plano_de_saude_ativas.csv";
+        Path target = Paths.get("tmp", "operadoras_ativas.csv");
+        Files.createDirectories(target.getParent());
+
+        try (InputStream in = new URL(url).openStream()) {
+            Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
         }
-        return destino;
+        return target;
     }
 }
