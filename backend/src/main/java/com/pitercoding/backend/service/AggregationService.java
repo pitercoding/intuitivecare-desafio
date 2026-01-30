@@ -1,6 +1,6 @@
 package com.pitercoding.backend.service;
 
-import com.pitercoding.backend.domain.Despesa;
+import com.pitercoding.backend.domain.DespesaConsolidada;
 import com.pitercoding.backend.domain.DespesaAgregada;
 import org.springframework.stereotype.Service;
 
@@ -18,15 +18,15 @@ import java.util.stream.Collectors;
 @Service
 public class AggregationService {
 
-    public List<DespesaAgregada> aggregate(List<Despesa> despesas) {
-        Map<String, List<Despesa>> agrupado =
-                despesas.stream().collect(Collectors.groupingBy(Despesa::getCnpj));
+    public List<DespesaAgregada> aggregate(List<DespesaConsolidada> despesas) {
+        Map<String, List<DespesaConsolidada>> agrupado =
+                despesas.stream().collect(Collectors.groupingBy(DespesaConsolidada::getCnpj));
 
         List<DespesaAgregada> resultado = new ArrayList<>();
 
         for (var entry : agrupado.entrySet()) {
             List<BigDecimal> valores = entry.getValue()
-                    .stream().map(Despesa::getValor).toList();
+                    .stream().map(DespesaConsolidada::getValor).toList();
 
             BigDecimal total = valores.stream()
                     .reduce(BigDecimal.ZERO, BigDecimal::add);

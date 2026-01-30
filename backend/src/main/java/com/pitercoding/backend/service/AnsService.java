@@ -1,6 +1,6 @@
 package com.pitercoding.backend.service;
 
-import com.pitercoding.backend.domain.Despesa;
+import com.pitercoding.backend.domain.DespesaConsolidada;
 import com.pitercoding.backend.domain.DespesaAgregada;
 import com.pitercoding.backend.domain.Operadora;
 import com.pitercoding.backend.dto.AnsDownloadDto;
@@ -16,7 +16,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.time.YearMonth;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
@@ -73,7 +72,7 @@ public class AnsService {
 
     public void processarTrimestres(List<AnsDownloadDto> dtos) throws IOException {
         Files.createDirectories(Paths.get("tmp"));
-        List<Despesa> consolidado = new ArrayList<>();
+        List<DespesaConsolidada> consolidado = new ArrayList<>();
 
         // ------------------
         // 1. Download + extração + leitura
@@ -93,7 +92,7 @@ public class AnsService {
                                 int ano = Integer.parseInt(linha[2]);
                                 int trimestre = Integer.parseInt(linha[3]);
                                 BigDecimal valor = new BigDecimal(linha[4]);
-                                consolidado.add(new Despesa(cnpj, razao, ano, trimestre, valor));
+                                consolidado.add(new DespesaConsolidada(cnpj, razao, ano, trimestre, valor));
                             } catch (Exception e) {
                                 log.warn("Linha inválida CSV {}: {}", arquivo.getFileName(), Arrays.toString(linha));
                             }
@@ -102,7 +101,7 @@ public class AnsService {
                         xlsxService.readXlsx(arquivo).forEach(despesa -> {
                             String cnpj = despesa.getCnpj().replaceAll("\\D", "");
                             String razao = despesa.getRazaoSocial().trim();
-                            consolidado.add(new Despesa(cnpj, razao, despesa.getAno(),
+                            consolidado.add(new DespesaConsolidada(cnpj, razao, despesa.getAno(),
                                     despesa.getTrimestre(), despesa.getValor()));
                         });
                     }
@@ -129,15 +128,15 @@ public class AnsService {
                 .collect(Collectors.toMap(Operadora::getCnpj, op -> op));
 
         // Validar despesas
-        List<Despesa> despesasValidadas = consolidado.stream()
+        List<DespesaConsolidada> despesasValidadas = consolidado.stream()
                 .filter(validationService::isDespesaValida)
                 .toList();
 
         // Lista para despesas sem match
-        List<Despesa> semMatch = new ArrayList<>();
+        List<DespesaConsolidada> semMatch = new ArrayList<>();
 
         // Enriquecer despesas
-        List<Despesa> despesasEnriquecidas =
+        List<DespesaConsolidada> despesasEnriquecidas =
                 despesaEnrichmentService.enrichDespesas(despesasValidadas, mapaOperadoras, semMatch);
 
         // Gravar CSV de registros sem match

@@ -1,6 +1,6 @@
 package com.pitercoding.backend.service;
 
-import com.pitercoding.backend.domain.Despesa;
+import com.pitercoding.backend.domain.DespesaConsolidada;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -15,8 +15,8 @@ import java.util.List;
 
 @Service
 public class XlsxService {
-    public List<Despesa> readXlsx(Path arquivo) throws IOException {
-        List<Despesa> despesas = new ArrayList<>();
+    public List<DespesaConsolidada> readXlsx(Path arquivo) throws IOException {
+        List<DespesaConsolidada> despesas = new ArrayList<>();
         Workbook workbook = WorkbookFactory.create(arquivo.toFile());
         Sheet sheet = workbook.getSheetAt(0);
 
@@ -26,7 +26,7 @@ public class XlsxService {
             int ano = (int) row.getCell(2).getNumericCellValue();
             int trimestre = (int) row.getCell(3).getNumericCellValue();
             BigDecimal valor = BigDecimal.valueOf(row.getCell(4).getNumericCellValue());
-            despesas.add(new Despesa(cnpj, razao, ano, trimestre, valor));
+            despesas.add(new DespesaConsolidada(cnpj, razao, ano, trimestre, valor));
         }
         return despesas;
     }

@@ -1,6 +1,6 @@
 package com.pitercoding.backend.service;
 
-import com.pitercoding.backend.domain.Despesa;
+import com.pitercoding.backend.domain.DespesaConsolidada;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ public class ValidationService {
         this.cnpjValidator = cnpjValidator;
     }
 
-    public boolean isDespesaValida(Despesa despesa) {
+    public boolean isDespesaValida(DespesaConsolidada despesa) {
         if (!cnpjValidator.isValido(despesa.getCnpj())) {
             log.warn("CNPJ inválido: {}", despesa.getCnpj());
             return false;

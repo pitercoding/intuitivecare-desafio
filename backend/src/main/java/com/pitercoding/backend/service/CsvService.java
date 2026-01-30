@@ -3,7 +3,7 @@ package com.pitercoding.backend.service;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import com.opencsv.exceptions.CsvException;
-import com.pitercoding.backend.domain.Despesa;
+import com.pitercoding.backend.domain.DespesaConsolidada;
 import com.pitercoding.backend.domain.DespesaAgregada;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +24,7 @@ public class CsvService {
         }
     }
 
-    public void writeCsv(List<Despesa> despesas, Path arquivo) throws IOException {
+    public void writeCsv(List<DespesaConsolidada> despesas, Path arquivo) throws IOException {
         try (CSVWriter writer = new CSVWriter(new FileWriter(arquivo.toFile()))) {
             writer.writeNext(new String[]{
                     "CNPJ",
@@ -36,7 +36,7 @@ public class CsvService {
                     "NomeFantasia",
                     "Modalidade"
             });
-            for (Despesa d : despesas) {
+            for (DespesaConsolidada d : despesas) {
                 writer.writeNext(d.toArray());
             }
         }

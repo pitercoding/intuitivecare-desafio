@@ -1,6 +1,6 @@
 package com.pitercoding.backend.service;
 
-import com.pitercoding.backend.domain.Despesa;
+import com.pitercoding.backend.domain.DespesaConsolidada;
 import com.pitercoding.backend.domain.Operadora;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,13 +22,13 @@ public class DespesaEnrichmentService {
 
     private static final Logger log = LoggerFactory.getLogger(DespesaEnrichmentService.class);
 
-    public List<Despesa> enrichDespesas(List<Despesa> despesas,
-                                        Map<String, Operadora> mapaOperadoras,
-                                        List<Despesa> semMatch) {
+    public List<DespesaConsolidada> enrichDespesas(List<DespesaConsolidada> despesas,
+                                                   Map<String, Operadora> mapaOperadoras,
+                                                   List<DespesaConsolidada> semMatch) {
 
-        List<Despesa> enriquecidas = new ArrayList<>();
+        List<DespesaConsolidada> enriquecidas = new ArrayList<>();
 
-        for (Despesa d : despesas) {
+        for (DespesaConsolidada d : despesas) {
             Operadora op = mapaOperadoras.get(d.getCnpj());
             if (op != null) {
                 d.setUf(op.getUf());
