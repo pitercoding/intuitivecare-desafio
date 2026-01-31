@@ -14,6 +14,21 @@ CREATE TABLE operadora (
 );
 
 -- =========================
+-- TABELA: despesas_raw_ans
+-- =========================
+
+CREATE TABLE despesas_raw_ans (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    data DATE NOT NULL,
+    reg_ans VARCHAR(20) NOT NULL,
+    cd_conta_contabil VARCHAR(20),
+    descricao VARCHAR(255),
+    vl_saldc DECIMAL(15,2),
+    vl_saldo_final DECIMAL(15,2)
+);
+
+
+-- =========================
 -- TABELA: despesas_consolidadas
 -- =========================
 CREATE TABLE despesas_consolidadas (
