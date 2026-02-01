@@ -33,17 +33,11 @@ public class OperadoraController {
      * Retorna dados + metadados (total, página, limite).
      */
     @GetMapping
-    public Map<String, Object> listar(
+    public Page<Operadora> listar(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int limit
+            @RequestParam(defaultValue = "10") int size
     ) {
-        Page<Operadora> result = operadoraService.listar(PageRequest.of(page, limit));
-        Map<String, Object> response = new HashMap<>();
-        response.put("data", result.getContent());
-        response.put("total", result.getTotalElements());
-        response.put("page", result.getNumber());
-        response.put("limit", result.getSize());
-        return response;
+        return operadoraService.listar(PageRequest.of(page, size));
     }
 
     /**

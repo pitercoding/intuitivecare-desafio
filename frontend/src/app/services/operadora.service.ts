@@ -1,20 +1,26 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Operadora } from '../models/operadora.model';
 
-@Injectable({
-  providedIn: 'root',
-})
+export interface Page<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  number: number;
+  size: number;
+  first: boolean;
+  last: boolean;
+}
+
+@Injectable({ providedIn: 'root' })
 export class OperadoraService {
-  private readonly apiUrl = 'http://localhost:8080/api/operadoras';
+  private apiUrl = 'http://localhost:8080/api/operadoras';
 
   constructor(private http: HttpClient) {}
 
-  listar(page = 0, limit = 10): Observable<any> {
-    const params = new HttpParams().set('page', page).set('limit', limit);
-
-    return this.http.get<any>(this.apiUrl, { params });
+  listar(page = 0, size = 10): Observable<Page<Operadora>> {
+    return this.http.get<Page<Operadora>>(`${this.apiUrl}?page=${page}&size=${size}`);
   }
 
   buscarPorCnpj(cnpj: string): Observable<Operadora> {

@@ -1,6 +1,10 @@
 <h2>Operadoras</h2>
 
-<table>
+<div *ngIf="loading">
+  Carregando...
+</div>
+
+<table *ngIf="!loading && operadoras.length > 0">
   <thead>
     <tr>
       <th>CNPJ</th>
@@ -16,3 +20,17 @@
     </tr>
   </tbody>
 </table>
+
+<div *ngIf="totalPages > 0" class="paginacao">
+  <button (click)="paginaAnterior()" [disabled]="page === 0">
+    Anterior
+  </button>
+
+  <span>
+    Página {{ page + 1 }} de {{ totalPages }}
+  </span>
+
+  <button (click)="proximaPagina()" [disabled]="page === totalPages - 1">
+    Próxima
+  </button>
+</div>
