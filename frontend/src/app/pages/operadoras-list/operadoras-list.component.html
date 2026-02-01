@@ -1,10 +1,18 @@
 <h2>Operadoras</h2>
 
-<div *ngIf="loading">
-  Carregando...
-</div>
+<!-- Campo de busca -->
+<input
+  type="text"
+  placeholder="Buscar por CNPJ ou Razão Social"
+  [(ngModel)]="filtro"
+  (input)="aplicarFiltro()"
+/>
 
-<table *ngIf="!loading && operadoras.length > 0">
+<!-- Loading -->
+<div *ngIf="loading">Carregando...</div>
+
+<!-- Tabela de operadoras filtradas -->
+<table *ngIf="!loading && operadorasFiltradas.length > 0">
   <thead>
     <tr>
       <th>CNPJ</th>
@@ -13,7 +21,7 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let op of operadoras">
+    <tr *ngFor="let op of operadorasFiltradas">
       <td>{{ op.cnpj }}</td>
       <td>{{ op.razaoSocial }}</td>
       <td>{{ op.uf }}</td>
@@ -21,14 +29,18 @@
   </tbody>
 </table>
 
+<!-- Mensagem caso não existam operadoras filtradas -->
+<p *ngIf="!loading && operadorasFiltradas.length === 0">
+  Nenhuma operadora encontrada.
+</p>
+
+<!-- Paginação -->
 <div *ngIf="totalPages > 0" class="paginacao">
   <button (click)="paginaAnterior()" [disabled]="page === 0">
     Anterior
   </button>
 
-  <span>
-    Página {{ page + 1 }} de {{ totalPages }}
-  </span>
+  <span>Página {{ page + 1 }} de {{ totalPages }}</span>
 
   <button (click)="proximaPagina()" [disabled]="page === totalPages - 1">
     Próxima

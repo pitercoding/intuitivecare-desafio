@@ -1,9 +1,12 @@
 import { Routes } from '@angular/router';
 import { OperadorasListComponent } from './pages/operadoras-list/operadoras-list.component';
+import { OperadoraDetalheComponent } from './pages/operadora-detalhe/operadora-detalhe.component';
+import { EstatisticasComponent } from './pages/estatisticas/estatisticas.component';
 
 export const routes: Routes = [
-  {
-    path: '',
-    component: OperadorasListComponent,
-  },
+  { path: '', redirectTo: '/operadoras', pathMatch: 'full' },
+  { path: 'operadoras', component: OperadorasListComponent },
+  { path: 'operadoras/:cnpj', component: OperadoraDetalheComponent },
+  { path: 'estatisticas', component: EstatisticasComponent },
+  { path: '**', redirectTo: '/operadoras' }
 ];

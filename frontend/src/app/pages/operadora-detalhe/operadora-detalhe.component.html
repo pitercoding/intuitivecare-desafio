@@ -1,1 +1,22 @@
-<p>operadora-detalhe.component works!</p>
+<div *ngIf="loading">Carregando...</div>
+
+<div *ngIf="operadora">
+  <h2>{{ operadora.razaoSocial }} ({{ operadora.cnpj }})</h2>
+  <p>UF: {{ operadora.uf }}</p>
+  <p>Registro ANS: {{ operadora.registroAns }}</p>
+
+  <h3>Histórico de Despesas</h3>
+  <table *ngIf="despesas.length > 0">
+    <tr>
+      <th>Trimestre</th>
+      <th>Ano</th>
+      <th>Valor Despesas</th>
+    </tr>
+    <tr *ngFor="let d of despesas">
+      <td>{{ d.trimestre }}</td>
+      <td>{{ d.ano }}</td>
+      <td>{{ d.valor | currency:'BRL' }}</td>
+    </tr>
+  </table>
+  <p *ngIf="despesas.length === 0">Nenhuma despesa registrada.</p>
+</div>

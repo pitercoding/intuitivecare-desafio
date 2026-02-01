@@ -1,1 +1,16 @@
-<p>estatisticas.component works!</p>
+<h2>Estatísticas de Despesas por UF</h2>
+
+<!-- Loading -->
+<div *ngIf="loading" class="loading">
+  Carregando estatísticas...
+</div>
+
+<!-- Gráfico -->
+<div *ngIf="!loading && hasUFData">
+  <canvas id="graficoUF"></canvas>
+</div>
+
+<!-- Mensagem caso não haja dados -->
+<div *ngIf="!loading && !hasUFData">
+  Nenhum dado disponível para exibir o gráfico.
+</div>
