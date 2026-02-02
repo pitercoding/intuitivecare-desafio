@@ -8,19 +8,14 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * Objetivo: Gerar estatísticas.
- * Entrada: Milhares de registros de despesas "soltos".
- * Processamento: Agrupa por CNPJ -> Soma -> Calcula Média -> Calcula Variância.
- * Saída: Uma lista limpa onde cada item representa uma empresa e seu comportamento financeiro.
- */
-
 @Service
 public class AggregationService {
 
     public List<DespesaAgregada> aggregate(List<DespesaConsolidada> despesas) {
+        // Agrupa por registroAns
         Map<String, List<DespesaConsolidada>> agrupado =
-                despesas.stream().collect(Collectors.groupingBy(DespesaConsolidada::getCnpj));
+                despesas.stream()
+                        .collect(Collectors.groupingBy(DespesaConsolidada::getRegistroAns));
 
         List<DespesaAgregada> resultado = new ArrayList<>();
 
@@ -41,7 +36,8 @@ public class AggregationService {
             );
 
             DespesaAgregada despesaAgregada = new DespesaAgregada();
-            despesaAgregada.setCnpj(entry.getKey());
+            despesaAgregada.setRegistroAns(entry.getKey());
+            despesaAgregada.setCnpj(entry.getValue().get(0).getCnpj());
             despesaAgregada.setRazaoSocial(entry.getValue().get(0).getRazaoSocial());
             despesaAgregada.setUf(entry.getValue().get(0).getUf());
             despesaAgregada.setTotal(total);
@@ -50,6 +46,7 @@ public class AggregationService {
 
             resultado.add(despesaAgregada);
         }
+
         return resultado;
     }
 }

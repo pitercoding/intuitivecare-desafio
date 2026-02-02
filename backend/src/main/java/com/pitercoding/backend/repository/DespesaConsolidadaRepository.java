@@ -13,9 +13,9 @@ import java.util.List;
 @Repository
 public interface DespesaConsolidadaRepository extends JpaRepository<DespesaConsolidada, Long> {
 
-    List<DespesaConsolidada> findByCnpjOrderByAnoAscTrimestreAsc(String cnpj);
+    List<DespesaConsolidada> findByRegistroAnsOrderByAnoAscTrimestreAsc(String registroAns);
 
-    List<DespesaConsolidada> findByCnpj(String cnpj);
+    List<DespesaConsolidada> findByRegistroAns(String registroAns);
 
     @Query("SELECT SUM(d.valor) FROM DespesaConsolidada d")
     BigDecimal totalDespesas();
@@ -26,4 +26,3 @@ public interface DespesaConsolidadaRepository extends JpaRepository<DespesaConso
     @Query("SELECT d.razaoSocial FROM DespesaConsolidada d GROUP BY d.razaoSocial ORDER BY SUM(d.valor) DESC")
     Page<String> top5Operadoras(Pageable pageable);
 }
-

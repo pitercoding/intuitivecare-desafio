@@ -16,7 +16,10 @@ import lombok.Data;
 public class Operadora {
 
     @Id
-    @Column(length = 14)
+    @Column(name = "registro_ans", length = 14)
+    private String registroAns;
+
+    @Column(name = "cnpj", length = 14)
     private String cnpj;
 
     @Column(name = "razao_social", nullable = false)
@@ -24,9 +27,6 @@ public class Operadora {
 
     @Column(name = "nome_fantasia")
     private String nomeFantasia;
-
-    @Column(name = "registro_ans")
-    private String registroAns;
 
     @Column(name = "uf", length = 2)
     private String uf;

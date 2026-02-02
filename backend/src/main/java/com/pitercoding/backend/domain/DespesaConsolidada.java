@@ -16,7 +16,10 @@ public class DespesaConsolidada {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 14, nullable = false)
+    @Column(name = "registro_ans", length = 14, nullable = false)
+    private String registroAns;
+
+    @Column(name = "cnpj", length = 14, nullable = false)
     private String cnpj;
 
     @Column(name = "razao_social", nullable = false)
@@ -32,17 +35,18 @@ public class DespesaConsolidada {
     private String nomeFantasia;
     private String modalidade;
 
-    // construtor -> campos essenciais
-    public DespesaConsolidada(String cnpj, String razaoSocial, int ano, int trimestre, BigDecimal valor) {
+    public DespesaConsolidada(String cnpj, String razaoSocial, int ano, int trimestre, BigDecimal valor, String registroAns) {
         this.cnpj = cnpj;
         this.razaoSocial = razaoSocial;
         this.ano = ano;
         this.trimestre = trimestre;
         this.valor = valor;
+        this.registroAns = registroAns;
     }
 
     public String[] toArray() {
         return new String[]{
+                registroAns,
                 cnpj,
                 razaoSocial,
                 String.valueOf(ano),

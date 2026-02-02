@@ -26,7 +26,7 @@ public class XlsxService {
             int ano = (int) row.getCell(2).getNumericCellValue();
             int trimestre = (int) row.getCell(3).getNumericCellValue();
             BigDecimal valor = BigDecimal.valueOf(row.getCell(4).getNumericCellValue());
-            despesas.add(new DespesaConsolidada(cnpj, razao, ano, trimestre, valor));
+            despesas.add(new DespesaConsolidada(cnpj, razao, ano, trimestre, valor, null));
         }
         return despesas;
     }

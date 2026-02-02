@@ -1,7 +1,7 @@
 package com.pitercoding.backend.domain;
 
-import lombok.Data;
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.math.BigDecimal;
 
@@ -14,7 +14,12 @@ public class DespesaAgregada {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "registro_ans")
+    private String registroAns;
+
+    @Column(name = "cnpj", length = 14)
     private String cnpj;
+
     private String razaoSocial;
     private String uf;
 
@@ -27,4 +32,3 @@ public class DespesaAgregada {
     @Column(precision = 15, scale = 2)
     private BigDecimal desvioPadrao;
 }
-

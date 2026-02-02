@@ -41,26 +41,25 @@ public class OperadoraController {
     }
 
     /**
-     * GET /api/operadoras/{cnpj}
-     * Retorna os detalhes de uma operadora específica pelo CNPJ.
+     * GET /api/operadoras/{registroAns}
+     * Retorna os detalhes de uma operadora específica pelo Registro ANS.
      * Se não encontrar, retorna 404 Not Found.
      */
-    @GetMapping("/{cnpj}")
-    public ResponseEntity<Operadora> getOperadora(@PathVariable String cnpj) {
-        return operadoraService.findByCnpj(cnpj)
+    @GetMapping("/{registroAns}")
+    public ResponseEntity<Operadora> getOperadora(@PathVariable String registroAns) {
+        return operadoraService.findByRegistroAns(registroAns)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     /**
-     * GET /api/operadoras/{cnpj}/despesas
-     * Retorna todas as despesas consolidadas de uma operadora pelo CNPJ.
+     * GET /api/operadoras/{registroAns}/despesas
+     * Retorna todas as despesas consolidadas de uma operadora pelo Registro ANS.
      * Se não houver despesas, retorna 404 Not Found.
      */
-    @GetMapping("/{cnpj}/despesas")
-    public ResponseEntity<List<DespesaConsolidada>> getDespesasPorOperadora(@PathVariable String cnpj) {
-        List<DespesaConsolidada> despesas = operadoraService.findDespesasByCnpj(cnpj);
-        if (despesas.isEmpty()) return ResponseEntity.notFound().build();
+    @GetMapping("/{registroAns}/despesas")
+    public ResponseEntity<List<DespesaConsolidada>> getDespesas(@PathVariable String registroAns) {
+        List<DespesaConsolidada> despesas = operadoraService.findDespesasByRegistroAns(registroAns);
         return ResponseEntity.ok(despesas);
     }
 

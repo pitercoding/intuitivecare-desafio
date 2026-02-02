@@ -16,7 +16,6 @@ public class EstatisticasService {
     }
 
     public Map<String, Object> calcularEstatisticas() {
-        // Delegando para OperadoraService
         return operadoraService.calcularEstatisticas();
     }
 }

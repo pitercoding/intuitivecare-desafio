@@ -29,15 +29,17 @@ public class DespesaEnrichmentService {
         List<DespesaConsolidada> enriquecidas = new ArrayList<>();
 
         for (DespesaConsolidada d : despesas) {
-            Operadora op = mapaOperadoras.get(d.getCnpj());
+            Operadora op = mapaOperadoras.get(d.getRegistroAns());
             if (op != null) {
+                d.setCnpj(op.getCnpj());
                 d.setUf(op.getUf());
                 d.setNomeFantasia(op.getNomeFantasia());
                 d.setModalidade(op.getModalidade());
+                d.setRegistroAns(op.getRegistroAns());
                 enriquecidas.add(d);
             } else {
                 semMatch.add(d);
-                log.warn("CNPJ sem match no cadastro: {}", d.getCnpj());
+                log.warn("Registro ANS sem match no cadastro: {}", d.getRegistroAns());
             }
         }
 

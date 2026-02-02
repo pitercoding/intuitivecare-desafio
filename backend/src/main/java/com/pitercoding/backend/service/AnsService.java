@@ -34,7 +34,6 @@ import java.util.zip.ZipOutputStream;
  * Fluxo resumido:
  * [AnsController] -> [AnsService] -> [FileDownloadService, ZipService, CsvService/XlsxService, DespesaEnrichmentService] -> [consolidado_despesas.csv, despesas_agregadas.zip]
  */
-
 @Service
 public class AnsService {
 
@@ -92,7 +91,9 @@ public class AnsService {
                                 int ano = Integer.parseInt(linha[2]);
                                 int trimestre = Integer.parseInt(linha[3]);
                                 BigDecimal valor = new BigDecimal(linha[4]);
-                                consolidado.add(new DespesaConsolidada(cnpj, razao, ano, trimestre, valor));
+                                String registroAns = linha.length > 5 ? linha[5].trim() : null;
+
+                                consolidado.add(new DespesaConsolidada(cnpj, razao, ano, trimestre, valor, registroAns));
                             } catch (Exception e) {
                                 log.warn("Linha inválida CSV {}: {}", arquivo.getFileName(), Arrays.toString(linha));
                             }
@@ -102,7 +103,7 @@ public class AnsService {
                             String cnpj = despesa.getCnpj().replaceAll("\\D", "");
                             String razao = despesa.getRazaoSocial().trim();
                             consolidado.add(new DespesaConsolidada(cnpj, razao, despesa.getAno(),
-                                    despesa.getTrimestre(), despesa.getValor()));
+                                    despesa.getTrimestre(), despesa.getValor(), despesa.getRegistroAns()));
                         });
                     }
                 } catch (Exception e) {
@@ -118,14 +119,13 @@ public class AnsService {
         log.info("CSV consolidado gerado em {}", consolidadoCsv.toAbsolutePath());
 
         // ------------------
-        // 2. Validação + join com operadoras
+        // 2. Carregar mapa de operadoras por registroAns
         Path operadorasCsv = operadoraDownloadService.downloadOperadoras();
         Map<String, Operadora> mapaOperadoras = operadoraCsvService.loadOperadoras(operadorasCsv);
 
-        // Normalizar CNPJs do mapa e reconstruir o mapa para garantir match correto
+        // Normalizar registroAns no mapa
         mapaOperadoras = mapaOperadoras.values().stream()
-                .peek(op -> op.setCnpj(op.getCnpj().replaceAll("\\D", "")))
-                .collect(Collectors.toMap(Operadora::getCnpj, op -> op));
+                .collect(Collectors.toMap(Operadora::getRegistroAns, op -> op));
 
         // Validar despesas
         List<DespesaConsolidada> despesasValidadas = consolidado.stream()
@@ -135,7 +135,7 @@ public class AnsService {
         // Lista para despesas sem match
         List<DespesaConsolidada> semMatch = new ArrayList<>();
 
-        // Enriquecer despesas
+        // Enriquecer despesas usando registroAns
         List<DespesaConsolidada> despesasEnriquecidas =
                 despesaEnrichmentService.enrichDespesas(despesasValidadas, mapaOperadoras, semMatch);
 

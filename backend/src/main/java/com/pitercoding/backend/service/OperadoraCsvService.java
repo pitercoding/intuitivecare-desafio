@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Objetivo: Carregar operadoras em memória (Map por CNPJ).
+ * Objetivo: Carregar operadoras em memória (por registroAns).
  * Transformar um arquivo de texto bruto (CSV baixado) em objetos Java que o sistema consegue entender e manipular.
  * Entrada: Um caminho de arquivo (Path).
  * Saída: Um mapa organizado com todas as operadoras na memória.
@@ -33,23 +33,20 @@ public class OperadoraCsvService {
 
             while ((linha = reader.readNext()) != null) {
 
-                if (linha.length < 5) {
+                if (linha.length < 6) {
                     log.warn("Linha inválida no CSV de operadoras");
                     continue;
                 }
 
-                String cnpj = linha[0].replaceAll("\\D", "");
-
-                if (mapa.containsKey(cnpj)) continue;
-
                 Operadora operadora = new Operadora();
-                operadora.setCnpj(cnpj);
-                operadora.setRazaoSocial(linha[1]);
-                operadora.setNomeFantasia(linha[2]);
-                operadora.setUf(linha[3]);
-                operadora.setModalidade(linha[4]);
+                operadora.setRegistroAns(linha[0].trim());
+                operadora.setCnpj(linha[1].replaceAll("\\D", ""));
+                operadora.setRazaoSocial(linha[2]);
+                operadora.setNomeFantasia(linha[3]);
+                operadora.setUf(linha[4]);
+                operadora.setModalidade(linha[5]);
 
-                mapa.put(cnpj, operadora);
+                mapa.put(operadora.getRegistroAns(), operadora);
             }
         } catch (Exception e) {
             log.error("Erro ao processar o arquivo CSV: {}", arquivo.getFileName(), e);

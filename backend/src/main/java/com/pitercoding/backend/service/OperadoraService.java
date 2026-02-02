@@ -30,18 +30,17 @@ public class OperadoraService {
         return operadoraRepository.findAll(pageable);
     }
 
-    public Optional<Operadora> findByCnpj(String cnpj) {
-        return operadoraRepository.findById(cnpj);
+    public Optional<Operadora> findByRegistroAns(String registroAns) {
+        return operadoraRepository.findById(registroAns);
     }
 
-    public List<DespesaConsolidada> findDespesasByCnpj(String cnpj) {
-        return despesaConsolidadaRepository.findByCnpj(cnpj);
+    public List<DespesaConsolidada> findDespesasByRegistroAns(String registroAns) {
+        return despesaConsolidadaRepository.findByRegistroAnsOrderByAnoAscTrimestreAsc(registroAns);
     }
 
     public Map<String, Object> calcularEstatisticas() {
         BigDecimal total = despesaConsolidadaRepository.totalDespesas();
         BigDecimal media = despesaConsolidadaRepository.mediaDespesas();
-        // Pega top 5 usando Pageable
         List<String> top5 = despesaConsolidadaRepository.top5Operadoras(PageRequest.of(0, 5)).getContent();
 
         Map<String, Object> result = new HashMap<>();

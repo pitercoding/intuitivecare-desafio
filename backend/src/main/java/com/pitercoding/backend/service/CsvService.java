@@ -27,17 +27,21 @@ public class CsvService {
     public void writeCsv(List<DespesaConsolidada> despesas, Path arquivo) throws IOException {
         try (CSVWriter writer = new CSVWriter(new FileWriter(arquivo.toFile()))) {
             writer.writeNext(new String[]{
-                    "CNPJ",
-                    "RazaoSocial",
-                    "Ano",
-                    "Trimestre",
-                    "Valor",
-                    "UF",
-                    "NomeFantasia",
-                    "Modalidade"
+                    "RegistroANS", "CNPJ", "RazaoSocial", "Ano", "Trimestre", "Valor", "UF", "NomeFantasia", "Modalidade"
             });
+
             for (DespesaConsolidada d : despesas) {
-                writer.writeNext(d.toArray());
+                writer.writeNext(new String[]{
+                        d.getRegistroAns(),
+                        d.getCnpj(),
+                        d.getRazaoSocial(),
+                        String.valueOf(d.getAno()),
+                        String.valueOf(d.getTrimestre()),
+                        d.getValor().toString(),
+                        d.getUf(),
+                        d.getNomeFantasia(),
+                        d.getModalidade()
+                });
             }
         }
     }
