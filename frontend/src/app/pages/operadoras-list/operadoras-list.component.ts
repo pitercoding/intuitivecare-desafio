@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { OperadoraService, Page } from '../../services/operadora.service';
 import { FormsModule } from '@angular/forms';
 import { Operadora } from '../../models/operadora.model';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-operadoras-list.component',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './operadoras-list.component.html',
   styleUrl: './operadoras-list.component.scss',
 })

@@ -1,7 +1,11 @@
 <div *ngIf="loading">Carregando...</div>
 
 <div *ngIf="operadora">
-  <h2>{{ operadora.razaoSocial }} ({{ operadora.cnpj }})</h2>
+  <h2>
+    {{ operadora.razaoSocial }}
+    <span *ngIf="operadora.cnpj">({{ operadora.cnpj }})</span>
+  </h2>
+
   <p>UF: {{ operadora.uf }}</p>
   <p>Registro ANS: {{ operadora.registroAns }}</p>
 
@@ -18,11 +22,11 @@
       <tr *ngFor="let d of despesasPagina">
         <td>{{ d.trimestre }}</td>
         <td>{{ d.ano }}</td>
-        <td>{{ d.valor | currency:'BRL':'symbol':'1.2-2' }}</td>
+        <td>{{ d.valor | currency: 'BRL' : 'symbol' : '1.2-2' }}</td>
       </tr>
     </tbody>
   </table>
-  <p *ngIf="despesas.length === 0">Nenhuma despesa registrada.</p>
+  <p *ngIf="!loading && despesas.length === 0">Nenhuma despesa registrada.</p>
 
   <!-- Paginação -->
   <div *ngIf="totalPages > 1" class="paginacao">

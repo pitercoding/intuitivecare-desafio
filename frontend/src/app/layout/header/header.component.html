@@ -1,1 +1,20 @@
-<p>header.component works!</p>
+<nav class="navbar">
+  <div class="logo-area">
+    <img src="/logo-intuitive-care.png" alt="Intuitive Care" class="logo" />
+  </div>
+
+  <ul class="menu">
+    <li>
+      <a
+        routerLink="/operadoras"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        Operadoras
+      </a>
+    </li>
+    <li>
+      <a routerLink="/operadoras/estatisticas" routerLinkActive="active"> Estatísticas </a>
+    </li>
+  </ul>
+</nav>

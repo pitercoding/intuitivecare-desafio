@@ -21,7 +21,11 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let op of operadorasFiltradas">
+    <tr
+      *ngFor="let op of operadorasFiltradas"
+      [routerLink]="['/operadoras', op.registroAns]"
+      class="linha-clickavel"
+    >
       <td>{{ op.registroAns }}</td>
       <td>{{ op.razaoSocial }}</td>
       <td>{{ op.uf }}</td>
@@ -30,19 +34,13 @@
 </table>
 
 <!-- Mensagem caso não existam operadoras filtradas -->
-<p *ngIf="!loading && operadorasFiltradas.length === 0">
-  Nenhuma operadora encontrada.
-</p>
+<p *ngIf="!loading && operadorasFiltradas.length === 0">Nenhuma operadora encontrada.</p>
 
 <!-- Paginação -->
 <div *ngIf="totalPages > 0" class="paginacao">
-  <button (click)="paginaAnterior()" [disabled]="page === 0">
-    Anterior
-  </button>
+  <button (click)="paginaAnterior()" [disabled]="page === 0">Anterior</button>
 
   <span>Página {{ page + 1 }} de {{ totalPages }}</span>
 
-  <button (click)="proximaPagina()" [disabled]="page === totalPages - 1">
-    Próxima
-  </button>
+  <button (click)="proximaPagina()" [disabled]="page === totalPages - 1">Próxima</button>
 </div>

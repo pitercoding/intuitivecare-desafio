@@ -1,0 +1,13 @@
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+tr.linha-clickavel {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+tr.linha-clickavel:hover {
+  background-color: #f2f2f2;
+}
