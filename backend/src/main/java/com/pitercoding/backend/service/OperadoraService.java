@@ -37,16 +37,4 @@ public class OperadoraService {
     public List<DespesaConsolidada> findDespesasByRegistroAns(String registroAns) {
         return despesaConsolidadaRepository.findByRegistroAnsOrderByAnoAscTrimestreAsc(registroAns);
     }
-
-    public Map<String, Object> calcularEstatisticas() {
-        BigDecimal total = despesaConsolidadaRepository.totalDespesas();
-        BigDecimal media = despesaConsolidadaRepository.mediaDespesas();
-        List<String> top5 = despesaConsolidadaRepository.top5Operadoras(PageRequest.of(0, 5)).getContent();
-
-        Map<String, Object> result = new HashMap<>();
-        result.put("total", total);
-        result.put("media", media);
-        result.put("top5", top5);
-        return result;
-    }
 }

@@ -7,10 +7,21 @@
 
 <!-- Gráfico -->
 <div *ngIf="!loading && hasUFData">
-  <canvas id="graficoUF"></canvas>
+  <canvas #graficoUF width="800" height="400"></canvas>
 </div>
 
 <!-- Mensagem caso não haja dados -->
 <div *ngIf="!loading && !hasUFData">
   Nenhum dado disponível para exibir o gráfico.
+</div>
+
+<!-- Informações adicionais -->
+<div *ngIf="!loading && estatisticas">
+  <p><strong>Total de Despesas:</strong> R$ {{ estatisticas.total | number:'1.2-2' }}</p>
+  <p><strong>Média das Despesas:</strong> R$ {{ estatisticas.media | number:'1.2-2' }}</p>
+
+  <h3>Top 5 Operadoras</h3>
+  <ol>
+    <li *ngFor="let op of estatisticas.top5">{{ op }}</li>
+  </ol>
 </div>

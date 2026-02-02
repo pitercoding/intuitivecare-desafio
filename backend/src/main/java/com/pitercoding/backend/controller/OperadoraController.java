@@ -69,7 +69,6 @@ public class OperadoraController {
      */
     @GetMapping("/estatisticas")
     public ResponseEntity<Map<String, Object>> getEstatisticas() {
-        Map<String, Object> stats = estatisticasService.calcularEstatisticas();
-        return ResponseEntity.ok(stats);
+        return ResponseEntity.ok(estatisticasService.calcularEstatisticas());
     }
 }
