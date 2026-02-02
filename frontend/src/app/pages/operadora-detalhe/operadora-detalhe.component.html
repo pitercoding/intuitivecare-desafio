@@ -6,17 +6,28 @@
   <p>Registro ANS: {{ operadora.registroAns }}</p>
 
   <h3>Histórico de Despesas</h3>
-  <table *ngIf="despesas.length > 0">
-    <tr>
-      <th>Trimestre</th>
-      <th>Ano</th>
-      <th>Valor Despesas</th>
-    </tr>
-    <tr *ngFor="let d of despesas">
-      <td>{{ d.trimestre }}</td>
-      <td>{{ d.ano }}</td>
-      <td>{{ d.valor | currency:'BRL' }}</td>
-    </tr>
+  <table *ngIf="despesasPagina.length > 0">
+    <thead>
+      <tr>
+        <th>Trimestre</th>
+        <th>Ano</th>
+        <th>Valor Despesas</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let d of despesasPagina">
+        <td>{{ d.trimestre }}</td>
+        <td>{{ d.ano }}</td>
+        <td>{{ d.valor | currency:'BRL':'symbol':'1.2-2' }}</td>
+      </tr>
+    </tbody>
   </table>
   <p *ngIf="despesas.length === 0">Nenhuma despesa registrada.</p>
+
+  <!-- Paginação -->
+  <div *ngIf="totalPages > 1" class="paginacao">
+    <button (click)="paginaAnterior()" [disabled]="page === 0">Anterior</button>
+    <span>Página {{ page + 1 }} de {{ totalPages }}</span>
+    <button (click)="proximaPagina()" [disabled]="page === totalPages - 1">Próxima</button>
+  </div>
 </div>

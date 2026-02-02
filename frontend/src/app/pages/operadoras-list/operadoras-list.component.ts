@@ -17,7 +17,7 @@ export class OperadorasListComponent implements OnInit {
   operadorasFiltradas: Operadora[] = [];
 
   page = 0;
-  size = 10;
+  size = 20;
   totalPages = 0;
   loading = false;
 
@@ -48,7 +48,9 @@ export class OperadorasListComponent implements OnInit {
     }
     const filtroLower = this.filtro.toLowerCase();
     this.operadorasFiltradas = this.operadoras.filter(
-      (op) => op.cnpj.includes(this.filtro) || op.razaoSocial.toLowerCase().includes(filtroLower),
+      (op) =>
+        op.registroAns.includes(this.filtro) ||
+        op.razaoSocial.toLowerCase().includes(filtroLower),
     );
   }
 

@@ -6,7 +6,7 @@ import { EstatisticasComponent } from './pages/estatisticas/estatisticas.compone
 export const routes: Routes = [
   { path: '', redirectTo: '/operadoras', pathMatch: 'full' },
   { path: 'operadoras', component: OperadorasListComponent },
-  { path: 'operadoras/:cnpj', component: OperadoraDetalheComponent },
+  { path: 'operadoras/:registroAns', component: OperadoraDetalheComponent },
   { path: 'estatisticas', component: EstatisticasComponent },
   { path: '**', redirectTo: '/operadoras' }
 ];

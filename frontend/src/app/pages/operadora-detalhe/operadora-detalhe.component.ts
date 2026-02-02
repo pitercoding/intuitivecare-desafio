@@ -8,38 +8,64 @@ import { CommonModule, CurrencyPipe } from '@angular/common';
 @Component({
   selector: 'app-operadora-detalhe.component',
   standalone: true,
-  imports: [
-    CurrencyPipe,
-    CommonModule
-  ],
+  imports: [CommonModule, CurrencyPipe],
   templateUrl: './operadora-detalhe.component.html',
   styleUrl: './operadora-detalhe.component.scss',
 })
 export class OperadoraDetalheComponent implements OnInit {
   operadora?: Operadora;
   despesas: DespesaConsolidada[] = [];
+  despesasPagina: DespesaConsolidada[] = [];
   loading = false;
+
+  page = 0;
+  size = 20;
+  totalPages = 0;
 
   constructor(
     private route: ActivatedRoute,
-    private operadoraService: OperadoraService
+    private operadoraService: OperadoraService,
   ) {}
 
   ngOnInit(): void {
-    const cnpj = this.route.snapshot.paramMap.get('cnpj');
-    if (!cnpj) return;
+    const registroAns = this.route.snapshot.paramMap.get('registroAns');
+    if (!registroAns) return;
 
     this.loading = true;
 
-    this.operadoraService.buscarPorCnpj(cnpj).subscribe({
-      next: op => this.operadora = op,
-      error: () => this.loading = false
+    this.operadoraService.buscarPorRegistroAns(registroAns).subscribe({
+      next: (op) => (this.operadora = op),
+      error: () => (this.loading = false),
     });
 
-    this.operadoraService.getDespesas(cnpj).subscribe({
-      next: d => this.despesas = d,
-      error: () => this.loading = false,
-      complete: () => this.loading = false
+    this.operadoraService.getDespesasPorRegistroAns(registroAns).subscribe({
+      next: (d) => {
+        this.despesas = d;
+        this.totalPages = Math.ceil(this.despesas.length / this.size);
+        this.carregarPagina();
+      },
+      error: () => (this.loading = false),
+      complete: () => (this.loading = false),
     });
+  }
+
+  carregarPagina(): void {
+    const start = this.page * this.size;
+    const end = start + this.size;
+    this.despesasPagina = this.despesas.slice(start, end);
+  }
+
+  proximaPagina(): void {
+    if (this.page < this.totalPages - 1) {
+      this.page++;
+      this.carregarPagina();
+    }
+  }
+
+  paginaAnterior(): void {
+    if (this.page > 0) {
+      this.page--;
+      this.carregarPagina();
+    }
   }
 }

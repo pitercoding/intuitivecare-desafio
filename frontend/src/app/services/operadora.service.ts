@@ -27,22 +27,22 @@ export class OperadoraService {
 
   constructor(private http: HttpClient) {}
 
-   // Lista paginada de operadoras
+  // Lista paginada de operadoras
   listar(page = 0, size = 10): Observable<Page<Operadora>> {
     return this.http.get<Page<Operadora>>(`${this.apiUrl}?page=${page}&size=${size}`);
   }
 
-  // Busca operadora pelo CNPJ
-  buscarPorCnpj(cnpj: string): Observable<Operadora> {
-    return this.http.get<Operadora>(`${this.apiUrl}/${cnpj}`);
+  // Busca operadora pelo Registro ANS
+  buscarPorRegistroAns(registroAns: string): Observable<Operadora> {
+    return this.http.get<Operadora>(`${this.apiUrl}/${registroAns}`);
   }
 
-  // Busca despesas de uma operadora pelo CNPJ
-  getDespesas(cnpj: string): Observable<DespesaConsolidada[]> {
-    return this.http.get<DespesaConsolidada[]>(`${this.apiUrl}/${cnpj}/despesas`);
+  // Busca despesas pelo Registro ANS
+  getDespesasPorRegistroAns(registroAns: string): Observable<DespesaConsolidada[]> {
+    return this.http.get<DespesaConsolidada[]>(`${this.apiUrl}/${registroAns}/despesas`);
   }
 
-   // Busca estatísticas agregadas
+  // Busca estatísticas agregadas
   getEstatisticas(): Observable<Estatisticas> {
     return this.http.get<Estatisticas>(`${this.apiUrl}/estatisticas`);
   }

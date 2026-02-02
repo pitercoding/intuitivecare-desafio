@@ -9,7 +9,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +45,7 @@ public class OperadoraController {
      * Se não encontrar, retorna 404 Not Found.
      */
     @GetMapping("/{registroAns}")
-    public ResponseEntity<Operadora> getOperadora(@PathVariable String registroAns) {
+    public ResponseEntity<Operadora> buscarPorRegistroAns(@PathVariable String registroAns) {
         return operadoraService.findByRegistroAns(registroAns)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

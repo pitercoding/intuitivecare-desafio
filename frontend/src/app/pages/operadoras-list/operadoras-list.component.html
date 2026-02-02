@@ -15,14 +15,14 @@
 <table *ngIf="!loading && operadorasFiltradas.length > 0">
   <thead>
     <tr>
-      <th>CNPJ</th>
+      <th>Registro ANS</th>
       <th>Razão Social</th>
       <th>UF</th>
     </tr>
   </thead>
   <tbody>
     <tr *ngFor="let op of operadorasFiltradas">
-      <td>{{ op.cnpj }}</td>
+      <td>{{ op.registroAns }}</td>
       <td>{{ op.razaoSocial }}</td>
       <td>{{ op.uf }}</td>
     </tr>
