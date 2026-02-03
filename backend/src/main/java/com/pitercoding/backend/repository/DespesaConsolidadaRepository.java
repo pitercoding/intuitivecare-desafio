@@ -30,9 +30,10 @@ public interface DespesaConsolidadaRepository
     BigDecimal mediaDespesas();
 
     @Query("""
-        SELECT d.razaoSocial
+        SELECT o.razaoSocial
         FROM DespesaConsolidada d
-        GROUP BY d.razaoSocial
+        JOIN Operadora o ON o.registroAns = d.registroAns
+        GROUP BY o.razaoSocial
         ORDER BY SUM(d.valor) DESC
     """)
     Page<String> top5Operadoras(Pageable pageable);
