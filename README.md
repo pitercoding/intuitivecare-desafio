@@ -4,138 +4,66 @@
 
 Este projeto importa, normaliza, consolida e analisa dados financeiros públicos da ANS (Agência Nacional de Saúde Suplementar), permitindo consultas analíticas sobre despesas das operadoras de planos de saúde.
 
-Ele contempla:
+O foco é entregar uma solução funcional, com decisões técnicas justificadas e documentação clara de trade-offs e desvios em relação ao enunciado.
 
-- Estruturação de banco de dados relacional (MySQL)
-- Processamento e agregação de CSVs com Python
-- Consultas analíticas SQL
-- Integração futura com API REST e frontend
+## Tecnologias Utilizadas
 
----
+- MySQL 8.0+
+- Java 17+ / Spring Boot (backend)
+- Python 3.8+ (agregação via script)
+- Angular (frontend)
+- CSV / ZIP (dados públicos ANS)
 
-## 🧱 Tecnologias Utilizadas
-
-- **MySQL 8.0+**
-- **Java 17+ / Spring Boot** (backend principal)
-- **Python 3.8+** (para agregação de dados)
-- **Angular** (frontend)
-- **CSV / ZIP** (dados públicos ANS)
-- **MySQL Workbench**
-
----
-
-## 📁 Estrutura do Projeto
+## Estrutura do Projeto
 
 ```bash
 intuitivecare-desafio/
 ├── backend/
 │   ├── sql/
-│   │   ├── extracted/      # CSVs processados por trimestre (1T2025, 2T2025, 3T2025)
-│   │   ├── raw/            # ZIPs originais e CSV de operadoras (operadoras_ativas.csv)
+│   │   ├── extracted/                # CSVs processados por trimestre (ex.: 1T2025, 2T2025, 3T2025)
+│   │   ├── raw/                      # ZIPs originais e CSV de operadoras
 │   │   ├── scripts/
 │   │   │   └── gerar_despesas_agregadas.py
-│   │   ├── ddl.sql         # Criação das tabelas
-│   │   ├── import.sql      # Importação dos CSVs para MySQL
-│   │   ├── queries_3_4.sql # Queries analíticas (item 3.4)
-│   ├── src/                # Código-fonte backend Java
-│   └── pom.xml             # Dependências Maven
-├── .gitignore              
-├── LICENSE                 
+│   │   ├── ddl.sql                   # Criação das tabelas
+│   │   ├── import.sql                # Importação dos CSVs para MySQL
+│   │   └── queries_3_4.sql           # Queries analíticas
+│   ├── src/
+│   │   ├── main/java/com/pitercoding/backend/
+│   │   │   ├── config/               # Configurações (RestTemplate)
+│   │   │   ├── controller/           # Rotas da API
+│   │   │   ├── domain/               # Entidades JPA
+│   │   │   ├── dto/                  # DTOs de resposta
+│   │   │   ├── repository/           # Repositórios JPA
+│   │   │   └── service/              # Regras de negócio e processamento
+│   │   └── main/resources/
+│   │       └── application.properties
+│   └── pom.xml                       # Dependências Maven
+├── frontend/
+│   ├── src/
+│   │   ├── app/
+│   │   │   ├── layout/               # Header e layout base
+│   │   │   ├── models/               # Modelos de dados
+│   │   │   ├── pages/                # Páginas (lista, detalhe, estatísticas)
+│   │   │   └── services/             # Serviços HTTP
+│   │   └── styles.scss
+│   └── angular.json
+├── postman/                          # Coleção Postman (JSON)
+├── docs/
+│   └── images/                       # Imagens do README (opcional)
+├── .gitignore
 └── README.md               # Documentação principal
 ```
 
----
+## Como Executar
 
-## Processamento de Dados
+### Pré-requisitos
 
-1. **Importação de dados da ANS**
-   - ZIPs dos últimos 3 trimestres
-   - Extração automática
-   - Filtragem por Despesas com Eventos/Sinistros
+- Java 17+
+- Maven
+- Node.js 18+ (ou compatível com Angular 20)
+- MySQL 8.0+
 
-2. **Consolidação**
-   - Agrupamento de dados por CNPJ, Razão Social, Trimestre, Ano
-   - Tratamento de CNPJs duplicados, valores zerados ou negativos
-   - CSV consolidado: `consolidado_despesas.csv`
-
-3. **Enriquecimento**
-   - Join com cadastro de operadoras ativas (`operadoras_ativas.csv`)
-   - Adição de `registro_ans`, `modalidade`, `uf`
-   - Tratamento de registros sem match ou duplicados
-
-4. **Agregação**
-   - Script Python: `gerar_despesas_agregadas.py`
-   - Calcula: total, média, desvio padrão por operadora/UF
-   - Limpa tabela `despesas_agregadas` antes de inserir
-
----
-
-## Banco de Dados (MySQL)
-
-Foram criadas **tabelas normalizadas**, separando responsabilidades:
-
-- operadora: dados cadastrais das operadoras ativas
-- despesas_consolidadas: despesas por operadora, trimestre e ano
-- despesas_agregadas: métricas calculadas (total, média e desvio padrão) via script Python
-
-### Trade-off técnico – Normalização
-
-**Opção escolhida**: Tabelas normalizadas
-
-Justificativa:
-
-- Evita duplicação de dados cadastrais
-- Facilita manutenção e atualização
-- Queries analíticas continuam simples com JOINs
-- Escala melhor para crescimento futuro do volume de dados
-
-### Tipos de Dados
-
-- **DECIMAL(15,2)**: valores monetários, evita problemas de precisão
-- **DATE**: datas de referência, melhor indexação e comparação
-
-### Importação dos Dados
-
-Feita via `LOAD DATA INFILE`, com cuidados:
-
-- Encoding UTF-8
-- Ignorar headers
-- Conversão automática de valores
-- Normalização de CNPJ (apenas números)
-
-Tratamento de inconsistências:
-
-| Problema encontrado             | Estratégia adotada              |
-| ------------------------------- | ------------------------------- |
-| Valores NULL em campos críticos | Registro rejeitado              |
-| Strings em campos numéricos     | Conversão implícita ou rejeição |
-| Datas inconsistentes            | Padronização no processamento   |
-
-## Agregação de Despesas (Python)
-
-- Script: `gerar_despesas_agregadas.py`
-- Funções principais:
-  - Agrupar despesas por operadora e UF
-  - Calcular total, média e desvio padrão
-  - Popular a tabela `despesas_agregadas` no MySQL
-- Estratégia: **batch insert** de 2000 registros por vez para performance
-
-## Queries Analíticas (SQL)
-
-Arquivo central: `queries_3_4.sql`
-
-- **Query 1**: Top 10 operadoras por despesa total
-- **Query 2**: Top 10 operadoras por média de despesa
-- **Query 3**: Top 10 operadoras por volatilidade (maior desvio padrão)
-- **Query 4**: Contas onde o desvio padrão é maior que a média absoluta
-- **Query 5**: Total de despesas agregadas por UF
-- **Query 6**: Evolução trimestral das despesas(suporte para análise temporal / frontend)
-
-**Decisões técnicas**: subqueries para legibilidade, cálculo de métricas complexas em Python para performance, índices em colunas críticas.
-
----
-
-## Ordem recomendada de execução
+### Banco de Dados e Scripts
 
 ```bash
 # 1. Criar banco e tabelas
@@ -154,38 +82,160 @@ python backend/sql/scripts/gerar_despesas_agregadas.py
 source backend/sql/queries_3_4.sql
 ```
 
----
+### Backend (Spring Boot)
 
-## Integração Futura
+```bash
+cd backend
+./mvnw spring-boot:run
+```
 
-A modelagem permite integração com uma **API REST** e **frontend** (Angular, Vue ou React), considerando:
+API: `http://localhost:8080`
 
-- Paginação eficiente
-- Queries indexadas por CNPJ, UF e período
-- Uso direto em gráficos e dashboards
+### Frontend (Angular)
 
----
+```bash
+cd frontend
+npm install
+npm start
+```
 
-## Trade-offs
+Frontend: `http://localhost:4200`
 
-- **Python**: cálculo de métricas complexas e batch inserts
-- **SQL**: consultas analíticas simples e seguras
-- **DECIMAL**: precisão em valores financeiros
-- **Normalização**: evita inconsistências e duplicação de dados
-- **Frontend Angular**: experiência prévia, fácil integração com API REST
+### Postman (variável baseUrl)
 
----
+- `baseUrl`: `http://localhost:8080`
 
-## Observações
+## Processamento de Dados (Implementado)
 
-- Valores negativos representam glosas ou reversões contábeis
-- UF e outras informações podem ser enriquecidas futuramente
-- Todos os trade-offs documentados no README
+1. **Coleta e leitura dos arquivos**
+   - Download de arquivos ZIP por trimestre e extração automática.
+   - Leitura de CSV e XLSX.
+   - Processamento em memória (lista), visando simplicidade e velocidade de desenvolvimento.
 
----
+2. **Consolidação**
+   - Geração de `consolidado_despesas.csv` com as colunas:
+     - RegistroANS, CNPJ, RazaoSocial, Ano, Trimestre, Valor, UF, NomeFantasia, Modalidade.
+
+3. **Validação**
+   - CNPJ válido (formato e dígitos).
+   - Valor positivo.
+   - Razão Social não vazia.
+
+4. **Enriquecimento**
+   - Join com cadastro de operadoras ativas.
+   - Enriquecimento por Registro ANS (UF, Modalidade, Nome Fantasia).
+   - Registros sem match são exportados separadamente.
+
+5. **Agregação**
+   - Cálculo de total, média e desvio padrão por operadora/UF.
+   - Geração de `despesas_agregadas.csv` e compactação em `despesas_agregadas.zip`.
+
+## Banco de Dados (MySQL)
+
+Foram criadas tabelas normalizadas:
+
+- `operadora`: dados cadastrais das operadoras ativas
+- `despesas_consolidadas`: despesas por operadora, trimestre e ano
+- `despesas_agregadas`: métricas calculadas (total, média e desvio padrão)
+
+### Trade-off Técnico – Normalização
+
+**Opção escolhida:** tabelas normalizadas
+
+Justificativa:
+
+- Evita duplicação de dados cadastrais
+- Facilita manutenção e atualização
+- Queries analíticas continuam simples com JOINs
+- Escala melhor para crescimento futuro do volume
+
+### Tipos de Dados
+
+- **DECIMAL(15,2):** valores monetários com precisão
+- **DATE:** datas com melhor indexação e comparação
+
+### Importação dos Dados
+
+Realizada via `LOAD DATA INFILE` com:
+
+- Encoding UTF-8
+- Ignorar headers
+- Conversão automática de valores
+- Normalização de CNPJ (apenas números)
+
+Tratamento de inconsistências:
+
+| Problema encontrado              | Estratégia adotada              |
+| -------------------------------- | ------------------------------- |
+| Valores NULL em campos críticos  | Registro rejeitado              |
+| Strings em campos numéricos      | Conversão implícita ou rejeição |
+| Datas inconsistentes             | Padronização no processamento   |
+
+## API REST (Java / Spring Boot)
+
+Rotas principais:
+
+- `GET /health`
+- `GET /api/operadoras?page=0&size=10`
+- `GET /api/operadoras/{registroAns}`
+- `GET /api/operadoras/{registroAns}/despesas`
+- `GET /api/operadoras/estatisticas`
+
+### Paginação e formato de resposta
+
+Foi utilizada paginação offset-based via `Page` do Spring Data.  
+O retorno inclui metadados (total, página, tamanho, primeira/última página), facilitando o consumo no frontend.
+
+## Coleção Postman
+
+Arquivo JSON salvo em: `postman/`.
+
+## Decisões e Trade-offs (Desvios do Enunciado)
+
+1. **Frontend em Angular (em vez de Vue)**
+   - Decisão baseada em experiência prévia e velocidade de entrega.
+2. **Backend em Java (em vez de Python)**
+   - Maior domínio pessoal e robustez para integrações.
+3. **Uso de Registro ANS como chave principal**
+   - As tabelas originais não traziam CNPJ de forma consistente em todos os arquivos.
+   - O Registro ANS é a chave mais estável no conjunto da ANS.
+   - CNPJ foi normalizado para 14 dígitos quando disponível.
+4. **Processamento em memória**
+   - Preferido por simplicidade e tempo de entrega.
+   - Volume de dados aceitável para execução local sem streaming.
+5. **Zip final**
+   - O enunciado pede `consolidado_despesas.zip` ou `Teste_{seu_nome}.zip`.
+   - Por simplificação, o ZIP gerado no fluxo é `despesas_agregadas.zip`.
+   - Esse ponto foi mantido para evitar refatorações de fluxo.
+
+## Mapeamento do Enunciado x Implementação
+
+| Item do teste | Status | Observação |
+| --- | --- | --- |
+| 1.1 / 1.2 | Adaptado | Download e leitura implementados em Java; varredura completa do FTP e TXT não foi incluída. |
+| 1.3 | Adaptado | CSV consolidado gerado com colunas extras além do exigido. |
+| 2.1 | Atendido | Validação de CNPJ, valores positivos e razão social não vazia. |
+| 2.2 | Adaptado | Join feito por Registro ANS em vez de CNPJ. |
+| 2.3 | Adaptado | Agregação por operadora/UF com métricas; ordenação priorizada no consumo. |
+| 3.2 / 3.3 | Atendido | DDL e importação via `LOAD DATA INFILE` com tratamento básico. |
+| 3.4 | Parcial | Queries presentes; algumas não seguem exatamente o enunciado. |
+| 4.2 | Adaptado | API REST em Java/Spring, não em Python. |
+| 4.3 | Adaptado | Frontend em Angular, não Vue. |
+| 4.4 | Atendido | Coleção Postman criada em JSON. |
+
+## Imagens
+
+- Tela da lista de operadoras com paginação.  
+  ![Tela de operadoras](docs/images/tela-operadoras.png)
+- Tela de detalhe com histórico de despesas.  
+  ![Detalhe da operadora](docs/images/tela-operadora-detalhe.png)
+- Gráfico de despesas por UF.  
+  ![Gráfico por UF](docs/images/tela-estatisticas-uf.png)
+- Print do Postman com as rotas principais.  
+  ![Postman rotas](docs/images/postman-rotas.png)
 
 ## Autor
 
-**Piter Gomes** — Aluno de Ciências da Computação (6º Semestre) & Desenvolvedor Full-Stack
+**Piter Gomes** — Aluno de Ciências da Computação (6º Semestre) e Desenvolvedor Full-Stack
 
-📧 [Email](mailto:piterg.bio@gmail.com) | 💼 [LinkedIn](https://www.linkedin.com/in/piter-gomes-4a39281a1/) | 💻 [GitHub](https://github.com/pitercoding) | 🌐 [Portfolio](https://portfolio-pitergomes.vercel.app/)
+[Email](mailto:piterg.bio@gmail.com) | [LinkedIn](https://www.linkedin.com/in/piter-gomes-4a39281a1/) | [GitHub](https://github.com/pitercoding) | [Portfolio](https://portfolio-pitergomes.vercel.app/) |
