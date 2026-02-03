@@ -5,14 +5,10 @@ import com.pitercoding.backend.domain.Operadora;
 import com.pitercoding.backend.repository.DespesaConsolidadaRepository;
 import com.pitercoding.backend.repository.OperadoraRepository;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
