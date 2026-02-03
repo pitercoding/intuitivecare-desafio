@@ -18,7 +18,7 @@ export class OperadorasListComponent implements OnInit {
   operadorasFiltradas: Operadora[] = [];
 
   page = 0;
-  size = 20;
+  size = 10;
   totalPages = 0;
   loading = false;
 
@@ -53,6 +53,12 @@ export class OperadorasListComponent implements OnInit {
         op.registroAns.includes(this.filtro) ||
         op.razaoSocial.toLowerCase().includes(filtroLower),
     );
+  }
+
+  limparFiltro(): void {
+    this.filtro = '';
+    this.page = 0;
+    this.carregarOperadoras();
   }
 
   proximaPagina(): void {

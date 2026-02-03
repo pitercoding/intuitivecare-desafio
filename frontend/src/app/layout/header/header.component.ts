@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -9,5 +9,10 @@ import { RouterModule } from '@angular/router';
   styleUrl: './header.component.scss',
 })
 export class HeaderComponent {
+  constructor(private router: Router) {}
 
+  isOperadorasActive(): boolean {
+    const url = this.router.url;
+    return url.startsWith('/operadoras') && !url.startsWith('/operadoras/estatisticas');
+  }
 }

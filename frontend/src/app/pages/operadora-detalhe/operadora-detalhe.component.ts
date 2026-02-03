@@ -4,11 +4,12 @@ import { OperadoraService } from '../../services/operadora.service';
 import { Operadora } from '../../models/operadora.model';
 import { DespesaConsolidada } from '../../models/despesa.model';
 import { CommonModule, CurrencyPipe } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-operadora-detalhe.component',
   standalone: true,
-  imports: [CommonModule, CurrencyPipe],
+  imports: [CommonModule, CurrencyPipe, RouterModule],
   templateUrl: './operadora-detalhe.component.html',
   styleUrl: './operadora-detalhe.component.scss',
 })
@@ -19,7 +20,7 @@ export class OperadoraDetalheComponent implements OnInit {
   loading = false;
 
   page = 0;
-  size = 20;
+  size = 10;
   totalPages = 0;
 
   constructor(

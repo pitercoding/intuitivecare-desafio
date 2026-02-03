@@ -5,17 +5,17 @@
   Carregando estatísticas...
 </div>
 
-<!-- Gráfico -->
-<div *ngIf="!loading && hasUFData">
-  <canvas #graficoUF width="800" height="400"></canvas>
+<!-- GrÃ¡fico -->
+<div *ngIf="!loading && hasUFData" class="grafico-container">
+  <canvas #graficoUF></canvas>
 </div>
 
-<!-- Mensagem caso não haja dados -->
+<!-- Mensagem caso nÃ£o haja dados -->
 <div *ngIf="!loading && !hasUFData">
-  Nenhum dado disponível para exibir o gráfico.
+  Nenhum dado disponí­vel para exibir o gráfico.
 </div>
 
-<!-- Informações adicionais -->
+<!-- InformaÃ§Ãµes adicionais -->
 <div *ngIf="!loading && estatisticas">
   <p><strong>Total de Despesas:</strong> R$ {{ estatisticas.total | number:'1.2-2' }}</p>
   <p><strong>Média das Despesas:</strong> R$ {{ estatisticas.media | number:'1.2-2' }}</p>

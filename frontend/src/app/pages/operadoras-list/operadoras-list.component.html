@@ -1,12 +1,22 @@
 <h2>Operadoras</h2>
 
 <!-- Campo de busca -->
-<input
-  type="text"
-  placeholder="Buscar por CNPJ ou Razão Social"
-  [(ngModel)]="filtro"
-  (input)="aplicarFiltro()"
-/>
+<div class="busca-area">
+  <input
+    type="text"
+    placeholder="Buscar por Registro ANS ou Razão Social"
+    [(ngModel)]="filtro"
+    (input)="aplicarFiltro()"
+  />
+  <button
+    *ngIf="filtro"
+    type="button"
+    class="btn-secundario"
+    (click)="limparFiltro()"
+  >
+    Limpar busca
+  </button>
+</div>
 
 <!-- Loading -->
 <div *ngIf="loading">Carregando...</div>
@@ -37,7 +47,7 @@
 <p *ngIf="!loading && operadorasFiltradas.length === 0">Nenhuma operadora encontrada.</p>
 
 <!-- Paginação -->
-<div *ngIf="totalPages > 0" class="paginacao">
+<div *ngIf="totalPages > 0 && !filtro" class="paginacao">
   <button (click)="paginaAnterior()" [disabled]="page === 0">Anterior</button>
 
   <span>Página {{ page + 1 }} de {{ totalPages }}</span>

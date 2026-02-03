@@ -7,14 +7,19 @@
     <li>
       <a
         routerLink="/operadoras"
-        routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }"
+        [class.active]="isOperadorasActive()"
       >
         Operadoras
       </a>
     </li>
     <li>
-      <a routerLink="/operadoras/estatisticas" routerLinkActive="active"> Estatísticas </a>
+      <a
+        routerLink="/operadoras/estatisticas"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        Estatísticas
+      </a>
     </li>
   </ul>
 </nav>
